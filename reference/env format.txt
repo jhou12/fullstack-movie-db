@@ -1,0 +1,9 @@
+// ENV FORMAT:
+
+SQL_USER=usernameHere
+SQL_PASS=passwordHere
+SQL_DB=test
+MONGO_DB=test
+SERVER=3000
+
+EMPTY_STRING_VAR=''

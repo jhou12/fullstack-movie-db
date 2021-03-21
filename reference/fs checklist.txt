@@ -1,0 +1,20 @@
+// FS SETUP CHECKLIST:
+
+1.	npm init
+2.	npm install
+3.	npm install --save-dev nodemon
+4.	npm install express --save
+5.	npm install mongoose --save
+6.	npm install mysql, mysql2 --save, sequelize --save
+7.	npm install react & npm install react-dom
+    a.	setup app.jsx
+    b.	index.html: add “app” div
+    c.	index.html: add “bundle” script
+8.	npm install axios
+9.	express:
+    a.	app.use(express.static(‘reactFolder’))
+    b.	app.use(express.json())
+    c.	app.use(express.urlencoded({extended: true})
+10. install webpack
+11. npm install dotenv
+12. npm install --save styled-components
