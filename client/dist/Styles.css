@@ -1,3 +1,65 @@
 body {
-  margin: 0;
+  font-family: sans-serif, arial;
+}
+h1 {
+  color: green;
+  font-family: 'Verdana';
+}
+#movie {
+  padding: 20px;
+  border: 1px solid rgb(197, 197, 197);
+  width: 400px;
+  margin: -1px;
+}
+.inline {
+  display: inline-block;
+}
+.watch {
+  padding: 20px;
+  border: 1px solid rgb(197, 197, 197);
+  width: 90px;
+  margin: -1px;
+}
+.search {
+  margin: 10px;
+}
+#watched {
+  float: right;
+  color: white;
+  background-color: forestgreen;
+  border-radius: 5px;
+  border: 0px;
+}
+#notwatched {
+  float: right;
+  color: gray;
+  border-radius: 5px;
+  border: 0px;
+}
+#watchedTab {
+  background-color: forestgreen;
+}
+#stats {
+  padding: 20px;
+  border: 1px solid rgb(197, 197, 197);
+  width: 400px;
+  margin: -1px;
+  font-size: 15px;
+  line-height: 19px;
+}
+#green {
+  height: 12px;
+  width: 12px;
+  background-color: forestgreen;
+  border-radius: 50%;
+  display: inline-block;
+}
+#gray {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  border-style: solid;
+  border-color: gray;
+  border-width: 1px;
+  display: inline-block;
 }
