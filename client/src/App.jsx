@@ -6,19 +6,19 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      results: [{title: 'Database not connected, no movies to diplay.'}],
+      allMovies: [{title: 'Database not connected, no movies to diplay.'}],
+      display: [],
+      searchResults: [],
       search: '',
-      title: '',
-      watching: [],
-      data: '',
-      add: ''
+      add: '',
+      watchTabClicked: false,
     }
     this.handleChange = this.handleChange.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleSearch = this.handleSearch.bind(this)
     this.handleAdd = this.handleAdd.bind(this)
     this.handleToggle = this.handleToggle.bind(this)
-    this.handleWatched = this.handleWatched.bind(this)
-    this.handleToWatch = this.handleToWatch.bind(this)
+    this.handleWatchedTab = this.handleWatchedTab.bind(this)
+    this.handleAllMoviesTab = this.handleAllMoviesTab.bind(this)
     this.handleStats = this.handleStats.bind(this)
   }
   handleChange(event) {
@@ -26,20 +26,30 @@ class App extends React.Component {
       [event.target.name]: event.target.value
     })
   }
-  handleSubmit(event) {
+  handleSearch(e) {
     event.preventDefault()
-    console.log('SUBMIT CLICKED!')
-    var id = 1
-    axios.post(`/api/movie/${id}`,{ data: {query: this.state.search }})
-    .then(res => {
-      this.setState({
-        results: res.data
-      })
+    this.setState({
+      search: e.target.value
     })
+    var matches = []
+    for (var i = 0; i < this.state.allMovies.length; i++) {
+      if (this.state.allMovies[i].title.toLowerCase().includes(this.state.search.toLowerCase())) {
+        matches.push(this.state.allMovies[i])
+      }
+    }
+    if (matches.length > 0) {
+      this.setState({
+        display: matches,
+        })
+    } else {
+      this.setState({
+        display: [{ title: 'No movie by that name found.' }]
+      })
+    }
   }
   handleAdd(event) {
     event.preventDefault()
-    axios.post('/newmovie', this.state.add)
+    axios.post('/addMovie', {title: this.state.add})
     .then(res => {
       console.log('add res:', res.data)
     })
@@ -47,45 +57,51 @@ class App extends React.Component {
   handleToggle(event) {
     console.log('APP TOGGLE RUN')
     var movieId = event.target.className
-    axios.post('http://localhost:3000/watched', {"movieId": movieId})
+    axios.post('/watched', {"movieId": movieId})
     .then(res => {
       console.log(res.data)
     })
     var newstate = this.state.data.slice()
     newstate[event.target.className].watched = !newstate[event.target.className].watched
     this.setState({
-      results: newstate
+      allMovies: newstate
     })
   }
-  handleWatched(event) {
-    var data = this.state.data
-    var newarr =[]
-    data.forEach(movie => {
+  handleWatchedTab(event) {
+    console.log('handlewatchedTab clicked')
+    var watchedMovies =[]
+    this.state.allMovies.forEach(movie => {
       if (movie.watched) {
-        newarr.push(movie)
+        watchedMovies.push(movie)
       }
     })
-    this.setState({
-      results: newarr
-    })
+    if (watchedMovies.length > 0) {
+      this.setState({
+        display: watchedMovies,
+        watchTabClicked: true,
+      })
+    } else {
+      this.setState({
+        display: [{ title: "No movies to display."}]
+      })
+    }
   }
-  handleToWatch(event) {
-    var data = this.state.data
-    var newarr =[]
-    data.forEach(movie => {
-      if (!movie.watched) {
-        newarr.push(movie)
-      }
-    })
-    this.setState({
-      results: newarr
+  handleAllMoviesTab(event) {
+    console.log('handleAllMoviesTab clicked')
+    axios('/api/movies')
+    .then(res => {
+      this.setState({
+        allMovies: res.data,
+        display: res.data,
+        watchTabClicked: false,
+      })
     })
   }
   handleStats(event) {
     var newstate = this.state.data
     newstate[event.target.className].statsVisible = !newstate[event.target.className].statsVisible
     this.setState({
-      results: newstate
+      allMovies: newstate
     })
   }
   componentDidMount() {
@@ -94,8 +110,8 @@ class App extends React.Component {
       const serverMovies = res.data
       console.log('SERVER DATA: ', serverMovies)
       this.setState({
-        results: serverMovies,
-        data: serverMovies
+        display: serverMovies,
+        allMovies: serverMovies
       })
     })
   }
@@ -103,23 +119,22 @@ class App extends React.Component {
     return (
       <div>
         <h1>MovieList</h1>
-        <form>
-          <input type="text" name="add" value={this.state.title} onChange={this.handleChange} placeholder="Add movie title here"/>
-          <button onClick={this.handleAdd}>Add</button>
-          </form>
+        <div id="toWatchTab" className="inline search">
+          <input type="text" name="search" value={this.state.search} onChange={this.handleSearch}placeholder="Search..."/>
+        </div>
 
           <p></p>
           <form>
 
-          <div className="watch inline" onClick={this.handleToWatch}>All Movies</div><div id="watchedTab" className="watch inline" onClick={this.handleWatched}>Watched</div>
+          {!this.state.watchTabClicked ? <div className="watch inline" style={{"background-color": "forestgreen"}}onClick={this.handleAllMoviesTab} >All Movies</div> : <div className="watch inline" onClick={this.handleAllMoviesTab} >All Movies</div>}
 
-          <div id="toWatchTab" className="inline search">
-          <input type="text" name="search" value={this.state.search} onChange={this.handleChange} placeholder="Search..."/>
-          <button onClick={this.handleSubmit}>Go!</button>
-          </div>
+          {this.state.watchTabClicked ? <div id="watchedTab" className="watch inline" style={{"background-color": "forestgreen"}} onClick={this.handleWatchedTab}>Watched</div> : <div id="watchedTab" className="watch inline" onClick={this.handleWatchedTab}>Watched</div>}
+
+          <input type="text" name="add" className="inline search" value={this.state.add} onChange={this.handleChange} placeholder="Add new movie here"/>
+          <button onClick={this.handleAdd}>Add</button>
         </form>
 
-        {this.state.results.map((movie, index) =>
+        {this.state.display.map((movie, index) =>
           <MovieItem key={index} movie={movie} lookup={index} handleToggle={this.handleToggle} handleStats={this.handleStats}/>
         )}
       </div>
