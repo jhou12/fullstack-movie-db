@@ -40,7 +40,7 @@ app.get('/getMovies', (req, res) => {
     if (error) {
       res.status(404).send('get movies error')
     } else {
-      console.log('server test', results)
+      // console.log('server test', results)
       res.status(200).send(formatResData(results))
     }
   })
@@ -60,7 +60,26 @@ app.post('/watched', (req, res) => {
         if (error) {
           res.status(404).send('server get movies error')
         } else {
-          console.log('server test', results)
+          // console.log('server test', results)
+          res.status(200).send(formatResData(results))
+        }
+      })
+    }
+  })
+}
+)
+
+app.post('/visible', (req, res) => {
+  // console.log('watched send from client', req.body)
+  connection.query(`update movies set statsVisible=${!req.body.currentStatus} where id=${req.body.movieId}`, function(error, results, fields) {
+    if (error) {
+      res.status(400).send('server statsVisible status error')
+    } else {
+      connection.query('select * from movies', function(error, results, fields) {
+        if (error) {
+          res.status(404).send('server get movies error')
+        } else {
+          // console.log('server test', results)
           res.status(200).send(formatResData(results))
         }
       })

@@ -11,8 +11,8 @@ class Stats extends React.Component {
               <b>Year:</b> {this.props.stats.Year}
               <br/><b>Runtime</b>: {this.props.stats.Runtime} min
               <br/><b>Metascore:</b> {this.props.stats.Metascore}
-              <br/><b>imdbRating:</b> {this.props.stats.imdbRating}
-              <br/><b>Watched:</b> {this.props.watched ? <div id="green" className={this.props.lookup} onClick={(e) => this.props.handleToggle(e)} ></div> : <div id="gray" className={this.props.lookup} onClick={(e) => this.props.handleToggle(e)}></div>}
+              <br/><b>imdbRating:</b> {this.props.stats.imdbRating}/10
+              <br/><b>Watched:</b> {this.props.watched ? <div id="green" className={this.props.lookup} onClick={(e) => this.props.handleWatchedToggle(e, this.props.watched)} ></div> : <div id="gray" className={this.props.lookup} onClick={(e) => this.props.handleWatchedToggle(e, this.props.watched)}></div>}
           </div>
         )
       } else {

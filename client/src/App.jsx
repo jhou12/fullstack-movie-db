@@ -16,10 +16,10 @@ class App extends React.Component {
     this.handleChange = this.handleChange.bind(this)
     this.handleSearch = this.handleSearch.bind(this)
     this.handleAdd = this.handleAdd.bind(this)
-    this.handleToggle = this.handleToggle.bind(this)
-    this.handleWatchedTab = this.handleWatchedTab.bind(this)
     this.handleAllMoviesTab = this.handleAllMoviesTab.bind(this)
-    this.handleStats = this.handleStats.bind(this)
+    this.handleWatchedTab = this.handleWatchedTab.bind(this)
+    this.handleWatchedToggle = this.handleWatchedToggle.bind(this)
+    this.handleStatsToggle = this.handleStatsToggle.bind(this)
   }
   handleChange(event) {
     this.setState({
@@ -54,14 +54,13 @@ class App extends React.Component {
       console.log('add res:', res.data)
     })
   }
-  handleToggle(event, currentStatus) {
-    var movieId = event.target.className
-    axios.post('/watched', {"movieId": Number(movieId + 1), "currentStatus": currentStatus})
+  handleAllMoviesTab(event) {
+    axios('/getMovies')
     .then(res => {
-      console.log('watch res data', res.data)
       this.setState({
         allMovies: res.data,
-        display: res.data
+        display: res.data,
+        watchTabClicked: false,
       })
     })
   }
@@ -84,21 +83,27 @@ class App extends React.Component {
       })
     }
   }
-  handleAllMoviesTab(event) {
-    axios('/getMovies')
+  handleWatchedToggle(event, currentStatus) {
+    // console.log('watched test', currentStatus)
+    var movieId = Number(event.target.className)
+    axios.post('/watched', {"movieId": movieId + 1, "currentStatus": currentStatus})
     .then(res => {
+      console.log('watch res data', res.data)
       this.setState({
         allMovies: res.data,
-        display: res.data,
-        watchTabClicked: false,
+        display: res.data
       })
     })
   }
-  handleStats(event) {
-    var newstate = this.state.allMovies
-    newstate[event.target.className].statsVisible = !newstate[event.target.className].statsVisible
-    this.setState({
-      display: newstate
+  handleStatsToggle(event, currentStatus) {
+    var movieId = Number(event.target.className)
+    axios.post('/visible', {"movieId": movieId + 1, "currentStatus": currentStatus})
+    .then(res => {
+      console.log('watch res data', res.data)
+      this.setState({
+        allMovies: res.data,
+        display: res.data
+      })
     })
   }
   componentDidMount() {
@@ -129,7 +134,7 @@ class App extends React.Component {
           <button onClick={this.handleAdd}>Add</button>
 
         {this.state.display.map((movie, index) =>
-          <MovieItem key={index} movie={movie} lookup={index} handleToggle={this.handleToggle} handleStats={this.handleStats}/>
+          <MovieItem key={index} movie={movie} lookup={index} handleWatchedToggle={this.handleWatchedToggle} handleStatsToggle={this.handleStatsToggle}/>
         )}
 
       </div>
