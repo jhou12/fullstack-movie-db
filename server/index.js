@@ -18,25 +18,30 @@ app.use(express.static('client/dist'))
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-app.get('/api/movies', (req, res) => {
+let formatResData = (resArray) => {
+  var formattedData = []
+  for (var i = 0; i < resArray.length; i++) {
+    var movie = {}
+    movie.title = resArray[i].title
+    movie.watched = resArray[i].watched
+    movie.stats = {}
+    movie.statsVisible = resArray[i].statsVisible
+    movie.stats.Year = resArray[i].year
+    movie.stats.Runtime = resArray[i].runtime
+    movie.stats.Metascore = resArray[i].metascore
+    movie.stats.imdbRating = resArray[i].imdb
+    formattedData.push(movie)
+  }
+  return formattedData
+}
+
+app.get('/getMovies', (req, res) => {
   connection.query('select * from movies', function(error, results, fields) {
     if (error) {
       res.status(404).send('get movies error')
     } else {
-      var dbresults = []
-      for (var i = 0; i < results.length; i++) {
-        var movie = {}
-        movie.title = results[i].title
-        movie.watched = results[i].watched
-        movie.stats = {}
-        movie.statsVisible = results[i].statsVisible
-        movie.stats.Year = results[i].year
-        movie.stats.Runtime = results[i].runtime
-        movie.stats.Metascore = results[i].metascore
-        movie.stats.imdbRating = results[i].imdb
-        dbresults.push(movie)
-      }
-      res.send(dbresults)
+      console.log('server test', results)
+      res.status(200).send(formatResData(results))
     }
   })
 })
@@ -46,20 +51,23 @@ app.post('/addMovie', (req, res) => {
 })
 
 app.post('/watched', (req, res) => {
-  connection.query(`select * from movies where id=${req.body.movieId}`, function(error, results, fields) {
+  // console.log('watched send from client', req.body)
+  connection.query(`update movies set watched=${!req.body.currentStatus} where id=${req.body.movieId}`, function(error, results, fields) {
     if (error) {
-      throw error
+      res.status(400).send('server watched status error')
     } else {
-      var current = results[0].watched
-      connection.query(`update movies set watched=${!current} where id=${req.body.movieId}`, function(error, results, fields) {
+      connection.query('select * from movies', function(error, results, fields) {
         if (error) {
-          throw error
+          res.status(404).send('server get movies error')
+        } else {
+          console.log('server test', results)
+          res.status(200).send(formatResData(results))
         }
-        res.send('watch status changed!')
       })
     }
   })
-})
+}
+)
 
 app.listen(port, () => {
   console.log('Listening at port ' + port)

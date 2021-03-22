@@ -54,21 +54,18 @@ class App extends React.Component {
       console.log('add res:', res.data)
     })
   }
-  handleToggle(event) {
-    console.log('APP TOGGLE RUN')
+  handleToggle(event, currentStatus) {
     var movieId = event.target.className
-    axios.post('/watched', {"movieId": movieId})
+    axios.post('/watched', {"movieId": Number(movieId + 1), "currentStatus": currentStatus})
     .then(res => {
-      console.log(res.data)
-    })
-    var newstate = this.state.data.slice()
-    newstate[event.target.className].watched = !newstate[event.target.className].watched
-    this.setState({
-      allMovies: newstate
+      console.log('watch res data', res.data)
+      this.setState({
+        allMovies: res.data,
+        display: res.data
+      })
     })
   }
   handleWatchedTab(event) {
-    console.log('handlewatchedTab clicked')
     var watchedMovies =[]
     this.state.allMovies.forEach(movie => {
       if (movie.watched) {
@@ -82,13 +79,13 @@ class App extends React.Component {
       })
     } else {
       this.setState({
-        display: [{ title: "No movies to display."}]
+        display: [{ title: "No movies to display."}],
+        watchTabClicked: true,
       })
     }
   }
   handleAllMoviesTab(event) {
-    console.log('handleAllMoviesTab clicked')
-    axios('/api/movies')
+    axios('/getMovies')
     .then(res => {
       this.setState({
         allMovies: res.data,
@@ -98,20 +95,19 @@ class App extends React.Component {
     })
   }
   handleStats(event) {
-    var newstate = this.state.data
+    var newstate = this.state.allMovies
     newstate[event.target.className].statsVisible = !newstate[event.target.className].statsVisible
     this.setState({
-      allMovies: newstate
+      display: newstate
     })
   }
   componentDidMount() {
-    axios.get('/api/movies')
+    axios.get('/getMovies')
     .then(res => {
-      const serverMovies = res.data
-      console.log('SERVER DATA: ', serverMovies)
+      console.log('SERVER DATA: ', res.data)
       this.setState({
-        display: serverMovies,
-        allMovies: serverMovies
+        display: res.data,
+        allMovies: res.data
       })
     })
   }
@@ -119,24 +115,23 @@ class App extends React.Component {
     return (
       <div>
         <h1>MovieList</h1>
+
         <div id="toWatchTab" className="inline search">
           <input type="text" name="search" value={this.state.search} onChange={this.handleSearch}placeholder="Search..."/>
         </div>
 
           <p></p>
-          <form>
-
           {!this.state.watchTabClicked ? <div className="watch inline" style={{"background-color": "forestgreen"}}onClick={this.handleAllMoviesTab} >All Movies</div> : <div className="watch inline" onClick={this.handleAllMoviesTab} >All Movies</div>}
 
           {this.state.watchTabClicked ? <div id="watchedTab" className="watch inline" style={{"background-color": "forestgreen"}} onClick={this.handleWatchedTab}>Watched</div> : <div id="watchedTab" className="watch inline" onClick={this.handleWatchedTab}>Watched</div>}
 
           <input type="text" name="add" className="inline search" value={this.state.add} onChange={this.handleChange} placeholder="Add new movie here"/>
           <button onClick={this.handleAdd}>Add</button>
-        </form>
 
         {this.state.display.map((movie, index) =>
           <MovieItem key={index} movie={movie} lookup={index} handleToggle={this.handleToggle} handleStats={this.handleStats}/>
         )}
+
       </div>
     );
   }
