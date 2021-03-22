@@ -1,62 +1,193 @@
+/* FORMAT: #'s = components, .'s = attributes */
+
+/* HEADER & SEARCH BAR */
+
 body {
+  background-color: black;
+  color: white;
   font-family: sans-serif, arial;
 }
-h1 {
-  color: green;
-  font-family: 'Verdana';
+#container {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 50px;
 }
-#movie {
-  padding: 20px;
-  border: 1px solid rgb(197, 197, 197);
-  width: 400px;
-  margin: -1px;
+h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
+  height: 125px;
+  background-color: #f6c800;
+  color: black;
+  font-family: 'impact';
+  font-size: 85px;
+  border-radius: 20px;
+  margin: auto;
+  margin-top: 30px;
+}
+h2 {
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 30px;
 }
 .inline {
   display: inline-block;
 }
 .watch {
-  padding: 20px;
-  border: 1px solid rgb(197, 197, 197);
   width: 90px;
-  margin: -1px;
-}
-.search {
-  margin: 10px;
-}
-#watched {
-  float: right;
-  color: white;
-  background-color: forestgreen;
-  border-radius: 5px;
-  border: 0px;
-}
-#notwatched {
-  float: right;
-  color: gray;
-  border-radius: 5px;
-  border: 0px;
-}
-#stats {
-  padding: 20px;
   border: 1px solid rgb(197, 197, 197);
-  width: 400px;
+  padding: 20px;
   margin: -1px;
+}
+#search {
+  display: flex;
+  justify-content: center;
+}
+#searchInput {
+  width: 200px;
+  height: 30px;
+  font-size: 16px;
+  text-align: center;
+  border: none;
+  border-radius: 30px;
+  margin-bottom: 15px;
+}
+#searchInput:focus {
+  outline:0;
+}
+
+/* TABS & ADD MOVIE LINE */
+
+#allMoviesTab {
+  background-color: darkgoldenrod;
+  color: black;
+  text-align: center;
+  border-color: black;
+  cursor: pointer;
+}
+#watchedTab {
+  background-color: darkgoldenrod;
+  color: black;
+  text-align: center;
+  border-color: black;
+  cursor: pointer;
+}
+#addMovie {
+  width: 125px;
+  height: 25px;
+  font-size: 13px;
+  text-align: center;
+  border: none;
+  border-radius: 20px;
+  margin-left: 15px;
+}
+#addMovie:focus {
+  outline:0;
+}
+#addMovieButton {
+  background-color: #f6c800;
+  width: 50px;
+  height: 30px;
+  font-size: 14px;
+  border: none;
+  border-radius: 20px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+#addMovieButton:focus {
+  outline:0;
+}
+
+/* MOVIE TITLE BAR */
+
+#movie {
+  display: flex;
+  width: 400px;
+  background-color: #f6c800;
+  color: black;
+  border: 1px solid black;
+  padding: 30px;
+  margin: -1px;
+}
+#movieTitle {
+  float: left;
+  padding-right: 10px;
+}
+#viewDetails {
+  float: left;
+  color: gray;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+#viewDetails:focus {
+  outline:0;
+}
+#watchedRectButton {
+  background-color: forestgreen;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-left: auto;
+  cursor: pointer;
+}
+#watchedRectButton:focus {
+  outline:0;
+}
+#notWatchedRectButton {
+  color: gray;
+  border: none;
+  border-radius: 5px;
+  margin-left: auto;
+  cursor: pointer;
+}
+#notWatchedRectButton:focus {
+  outline:0;
+}
+
+/* STATS SECTION */
+
+#stats {
+  width: 400px;
+  background-color: white;
+  color: black;
   font-size: 15px;
   line-height: 19px;
+  border: 1px solid black;
+  padding: 30px;
+  margin: -1px;
 }
-#green {
-  height: 12px;
+#watchedCircleLine {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+#watchedGreenCircle {
+  display: inline-block;
   width: 12px;
+  height: 12px;
   background-color: forestgreen;
   border-radius: 50%;
-  display: inline-block;
+  cursor: pointer;
 }
-#gray {
+#watchedGrayCircle {
+  display: inline-block;
   height: 12px;
   width: 12px;
   border-radius: 50%;
   border-style: solid;
   border-color: gray;
   border-width: 1px;
-  display: inline-block;
+  cursor: pointer;
+}
+#deleteButton {
+  float: right;
+  color: gray;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+#deleteButton:focus {
+  outline:0;
 }

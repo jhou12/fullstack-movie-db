@@ -50,13 +50,15 @@ class App extends React.Component {
   }
   handleAdd(event) {
     event.preventDefault()
-    axios.post('/addMovie', {title: this.state.add})
-    .then(res => {
-      this.setState({
-        allMovies: res.data,
-        display: res.data
+    if (this.state.add !== '') {
+      axios.post('/addMovie', {title: this.state.add})
+      .then(res => {
+        this.setState({
+          allMovies: res.data,
+          display: res.data
+        })
       })
-    })
+    }
   }
   handleAllMoviesTab(event) {
     axios('/getMovies')
@@ -125,25 +127,29 @@ class App extends React.Component {
   }
   render() {
     return (
-      <div>
-        <h1>MovieList</h1>
+      <div id="container">
+        <div id="column">
 
-        <div id="toWatchTab" className="inline search">
-          <input type="text" name="search" value={this.state.search} onChange={this.handleSearch}placeholder="Search..."/>
+        <h1>JMDb</h1>
+        <h2>JavaScript Movie Database</h2>
+
+        <div id="search" className="inline search">
+          <input id="searchInput" type="text" name="search" value={this.state.search} onChange={this.handleSearch}placeholder="Type to search..."/>
         </div>
 
           <p></p>
-          {!this.state.watchTabClicked ? <div className="watch inline" style={{"background-color": "forestgreen"}}onClick={this.handleAllMoviesTab} >All Movies</div> : <div className="watch inline" onClick={this.handleAllMoviesTab} >All Movies</div>}
+          {!this.state.watchTabClicked ? <div id="allMoviesTab" className="watch inline" style={{"background-color": "#f6c800"}}onClick={this.handleAllMoviesTab} >All Movies</div> : <div id="allMoviesTab" className="watch inline" onClick={this.handleAllMoviesTab} >All Movies</div>}
 
-          {this.state.watchTabClicked ? <div id="watchedTab" className="watch inline" style={{"background-color": "forestgreen"}} onClick={this.handleWatchedTab}>Watched</div> : <div id="watchedTab" className="watch inline" onClick={this.handleWatchedTab}>Watched</div>}
+          {this.state.watchTabClicked ? <div id="watchedTab" className="watch inline" style={{"background-color": "#f6c800"}} onClick={this.handleWatchedTab}>Watched</div> : <div id="watchedTab" className="watch inline" onClick={this.handleWatchedTab}>Watched</div>}
 
-          <input type="text" name="add" className="inline search" value={this.state.add} onChange={this.handleChange} placeholder="Add new movie here"/>
-          <button onClick={this.handleAdd}>Add</button>
+          <input id="addMovie" type="text" name="add" className="inline search" value={this.state.add} onChange={this.handleChange} placeholder="Add new movie..."/>
+          <button id="addMovieButton" onClick={this.handleAdd}>Add</button>
 
         {this.state.display.map((movie, index) =>
           <MovieItem key={index} movie={movie} handleWatchedToggle={this.handleWatchedToggle} handleStatsToggle={this.handleStatsToggle} handleDelete={this.handleDelete}/>
         )}
 
+        </div>
       </div>
     );
   }

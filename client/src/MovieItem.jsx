@@ -8,12 +8,12 @@ class MovieItem extends React.Component {
   render() {
     const watched = this.props.movie.watched
       return (
-        <div className="titlestats">
+        <div>
         <div id="movie">
-          {this.props.movie.title}
-          <div id="" onClick={()=> this.props.handleStatsToggle(this.props.movie.id, this.props.movie.statsVisible)}>+ (view details)</div>
+          <div id="movieTitle"><b>{this.props.movie.title}</b></div>
+          <button id="viewDetails" onClick={()=> this.props.handleStatsToggle(this.props.movie.id, this.props.movie.statsVisible)}>VIEW DETAILS</button>
 
-          {watched ? <button id="watched" onClick={() => this.props.handleWatchedToggle(this.props.movie.id, watched)}>WATCHED</button> : <button id="notwatched" onClick={() => this.props.handleWatchedToggle(this.props.movie.id, watched)}>NOT WATCHED</button>}
+          {watched ? <button id="watchedRectButton" onClick={() => this.props.handleWatchedToggle(this.props.movie.id, watched)}>WATCHED</button> : <button id="notWatchedRectButton" onClick={() => this.props.handleWatchedToggle(this.props.movie.id, watched)}>NOT WATCHED</button>}
         </div>
         <Stats id={this.props.movie.id} stats={this.props.movie.stats} visible={this.props.movie.statsVisible} watched={this.props.movie.watched} handleWatchedToggle={this.props.handleWatchedToggle} lookup={this.props.lookup} handleDelete={this.props.handleDelete}/>
         </div>

@@ -3,17 +3,7 @@ const app = express()
 const port = process.env.SERVER || 3000
 const axios = require('axios')
 const dotenv = require('dotenv').config()
-const mysql = require("mysql")
 const db = require('../database/mysql.js')
-
-var config = {
-  dialect: 'mysql',
-  user: process.env.SQL_USER,
-  password: process.env.SQL_PASS,
-  database: process.env.SQL_DB,
-  logging: false,
-}
-var connection = mysql.createConnection(config)
 
 app.use(express.static('client/dist'))
 app.use(express.json())
@@ -49,41 +39,41 @@ app.get('/getMovies', (req, res) => {
 
 app.post('/addMovie', (req, res) => {
   db.postMovie(req.body.title, (error, results, fields) => {
-        if (error) {
-          res.status(404).send('server add movies error')
-        } else {
-          res.status(200).send(formatResData(results))
-        }
+    if (error) {
+      res.status(404).send('server add movies error')
+    } else {
+      res.status(200).send(formatResData(results))
+    }
   })
 })
 
 app.put('/watched', (req, res) => {
   db.updateWatched(req.body, function(error, results, fields) {
-        if (error) {
-          res.status(404).send('server update watched error')
-        } else {
-          res.status(200).send(formatResData(results))
-        }
+    if (error) {
+      res.status(404).send('server update watched error')
+    } else {
+      res.status(200).send(formatResData(results))
+    }
   })
 })
 
 app.put('/visible', (req, res) => {
   db.updateVisible(req.body, function(error, results, fields) {
-        if (error) {
-          res.status(404).send('server update visible error')
-        } else {
-          res.status(200).send(formatResData(results))
-        }
+    if (error) {
+      res.status(404).send('server update visible error')
+    } else {
+      res.status(200).send(formatResData(results))
+    }
   })
 })
 
 app.delete('/deleteMovie', (req, res) => {
   db.deleteMovie(req.body.id, (error, results, fields) => {
-        if (error) {
-          res.status(404).send('server delete movie error')
-        } else {
-          res.status(200).send(formatResData(results))
-        }
+    if (error) {
+      res.status(404).send('server delete movie error')
+    } else {
+      res.status(200).send(formatResData(results))
+    }
   })
 })
 
