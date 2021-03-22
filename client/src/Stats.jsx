@@ -12,7 +12,8 @@ class Stats extends React.Component {
               <br/><b>Runtime</b>: {this.props.stats.Runtime} min
               <br/><b>Metascore:</b> {this.props.stats.Metascore}
               <br/><b>imdbRating:</b> {this.props.stats.imdbRating}/10
-              <br/><b>Watched:</b> {this.props.watched ? <div id="green" className={this.props.lookup} onClick={(e) => this.props.handleWatchedToggle(e, this.props.watched)} ></div> : <div id="gray" className={this.props.lookup} onClick={(e) => this.props.handleWatchedToggle(e, this.props.watched)}></div>}
+              <br/><b>Watched:</b> {this.props.watched ? <div id="green" onClick={() => this.props.handleWatchedToggle(this.props.id, this.props.watched)} ></div> : <div id="gray" onClick={() => this.props.handleWatchedToggle(this.props.id, this.props.watched)}></div>}
+              <br/><div className="delete" onClick={() => this.props.handleDelete(this.props.id)}>DELETE ENTRY</div>
           </div>
         )
       } else {

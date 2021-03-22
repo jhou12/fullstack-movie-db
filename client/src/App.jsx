@@ -20,6 +20,7 @@ class App extends React.Component {
     this.handleWatchedTab = this.handleWatchedTab.bind(this)
     this.handleWatchedToggle = this.handleWatchedToggle.bind(this)
     this.handleStatsToggle = this.handleStatsToggle.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
   }
   handleChange(event) {
     this.setState({
@@ -51,7 +52,10 @@ class App extends React.Component {
     event.preventDefault()
     axios.post('/addMovie', {title: this.state.add})
     .then(res => {
-      console.log('add res:', res.data)
+      this.setState({
+        allMovies: res.data,
+        display: res.data
+      })
     })
   }
   handleAllMoviesTab(event) {
@@ -83,23 +87,27 @@ class App extends React.Component {
       })
     }
   }
-  handleWatchedToggle(event, currentStatus) {
-    // console.log('watched test', currentStatus)
-    var movieId = Number(event.target.className)
-    axios.post('/watched', {"movieId": movieId + 1, "currentStatus": currentStatus})
+  handleWatchedToggle(id, currentStatus) {
+    axios.post('/watched', {"id": id, "currentStatus": currentStatus})
     .then(res => {
-      console.log('watch res data', res.data)
       this.setState({
         allMovies: res.data,
         display: res.data
       })
     })
   }
-  handleStatsToggle(event, currentStatus) {
-    var movieId = Number(event.target.className)
-    axios.post('/visible', {"movieId": movieId + 1, "currentStatus": currentStatus})
+  handleStatsToggle(id, currentStatus) {
+    axios.post('/visible', {"id": id, "currentStatus": currentStatus})
     .then(res => {
-      console.log('watch res data', res.data)
+      this.setState({
+        allMovies: res.data,
+        display: res.data
+      })
+    })
+  }
+  handleDelete(id) {
+    axios.post('/deleteMovie', {"id": id})
+    .then(res => {
       this.setState({
         allMovies: res.data,
         display: res.data
@@ -109,7 +117,6 @@ class App extends React.Component {
   componentDidMount() {
     axios.get('/getMovies')
     .then(res => {
-      console.log('SERVER DATA: ', res.data)
       this.setState({
         display: res.data,
         allMovies: res.data
@@ -134,7 +141,7 @@ class App extends React.Component {
           <button onClick={this.handleAdd}>Add</button>
 
         {this.state.display.map((movie, index) =>
-          <MovieItem key={index} movie={movie} lookup={index} handleWatchedToggle={this.handleWatchedToggle} handleStatsToggle={this.handleStatsToggle}/>
+          <MovieItem key={index} movie={movie} handleWatchedToggle={this.handleWatchedToggle} handleStatsToggle={this.handleStatsToggle} handleDelete={this.handleDelete}/>
         )}
 
       </div>
