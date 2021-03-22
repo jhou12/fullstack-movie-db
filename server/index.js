@@ -4,6 +4,7 @@ const port = process.env.SERVER || 3000
 const axios = require('axios')
 const dotenv = require('dotenv').config()
 const mysql = require("mysql")
+const db = require('../database/mysql.js')
 
 var config = {
   dialect: 'mysql',
@@ -37,7 +38,7 @@ let formatResData = (resArray) => {
 }
 
 app.get('/getMovies', (req, res) => {
-  connection.query('select * from movies', function(error, results, fields) {
+  db.getMovies((error, results, fields) => {
     if (error) {
       res.status(404).send('get movies error')
     } else {
@@ -47,70 +48,44 @@ app.get('/getMovies', (req, res) => {
 })
 
 app.post('/addMovie', (req, res) => {
-  connection.query(`INSERT INTO movies (title, watched, statsVisible) VALUES ('${req.body.title}', 0, 0)`, (error, results, fields) => {
-    if (error) {
-      res.status(404).send('server add movie error')
-    } else {
-      connection.query('select * from movies', function(error, results, fields) {
+  db.postMovie(req.body.title, (error, results, fields) => {
         if (error) {
-          res.status(404).send('server get movies error')
+          res.status(404).send('server add movies error')
         } else {
           res.status(200).send(formatResData(results))
         }
-      })
-    }
   })
 })
 
-app.post('/deleteMovie', (req, res) => {
-  connection.query(`DELETE FROM movies WHERE id=${req.body.id};`, (error, results, fields) => {
-    if (error) {
-      res.status(404).send('server delete movie error')
-    } else {
-      connection.query('select * from movies', function(error, results, fields) {
+app.put('/watched', (req, res) => {
+  db.updateWatched(req.body, function(error, results, fields) {
         if (error) {
-          res.status(404).send('server get movies error')
+          res.status(404).send('server update watched error')
         } else {
           res.status(200).send(formatResData(results))
         }
-      })
-    }
   })
 })
 
-app.post('/watched', (req, res) => {
-  connection.query(`update movies set watched=${!req.body.currentStatus} where id=${req.body.id}`, function(error, results, fields) {
-    if (error) {
-      res.status(400).send('server watched status error')
-    } else {
-      connection.query('select * from movies', function(error, results, fields) {
+app.put('/visible', (req, res) => {
+  db.updateVisible(req.body, function(error, results, fields) {
         if (error) {
-          res.status(404).send('server get movies error')
+          res.status(404).send('server update visible error')
         } else {
           res.status(200).send(formatResData(results))
         }
-      })
-    }
   })
-}
-)
+})
 
-app.post('/visible', (req, res) => {
-  connection.query(`update movies set statsVisible=${!req.body.currentStatus} where id=${req.body.id}`, function(error, results, fields) {
-    if (error) {
-      res.status(400).send('server statsVisible status error')
-    } else {
-      connection.query('select * from movies', function(error, results, fields) {
+app.delete('/deleteMovie', (req, res) => {
+  db.deleteMovie(req.body.id, (error, results, fields) => {
         if (error) {
-          res.status(404).send('server get movies error')
+          res.status(404).send('server delete movie error')
         } else {
           res.status(200).send(formatResData(results))
         }
-      })
-    }
   })
-}
-)
+})
 
 app.listen(port, () => {
   console.log('Listening at port ' + port)

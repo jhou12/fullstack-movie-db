@@ -88,7 +88,7 @@ class App extends React.Component {
     }
   }
   handleWatchedToggle(id, currentStatus) {
-    axios.post('/watched', {"id": id, "currentStatus": currentStatus})
+    axios.put('/watched', {id, currentStatus})
     .then(res => {
       this.setState({
         allMovies: res.data,
@@ -97,7 +97,7 @@ class App extends React.Component {
     })
   }
   handleStatsToggle(id, currentStatus) {
-    axios.post('/visible', {"id": id, "currentStatus": currentStatus})
+    axios.put('/visible', {id, currentStatus})
     .then(res => {
       this.setState({
         allMovies: res.data,
@@ -106,7 +106,7 @@ class App extends React.Component {
     })
   }
   handleDelete(id) {
-    axios.post('/deleteMovie', {"id": id})
+    axios.delete('/deleteMovie', {auth: {user: "root"}, data: {"id": id}})
     .then(res => {
       this.setState({
         allMovies: res.data,

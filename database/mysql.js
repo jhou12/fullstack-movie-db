@@ -1,42 +1,69 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const mysql = require("mysql")
 const dotenv = require('dotenv').config()
 
-const sequelize = new Sequelize({
+var config = {
   dialect: 'mysql',
-  username: process.env.SQL_USER,
+  user: process.env.SQL_USER,
   password: process.env.SQL_PASS,
-  database: process.env.SQL_DB || 'test',
+  database: process.env.SQL_DB,
   logging: false,
-})
+}
+var connection = mysql.createConnection(config)
 
-sequelize.authenticate()
-.then(() => console.log('Sequelize connected.'))
-.catch(err => console.log('sequelize connection error:', err))
+let getMovies = (cb) => {
+  connection.query('select * from movies', (error, results, fields) => {
+    if (error) {
+      cb(error)
+    } else {
+      cb(null, results)
+    }
+  })
+}
 
-const Test = sequelize.define('Test', {
-  testId: {
-    type: DataTypes.INTEGER,
-    // primaryKey: true,
-    // allowNull: false,
-    // autoIncrement: true,
-  },
-  testText: Sequelize.TEXT,
-}, { timestamps: false
-})
+let postMovie = (title, cb) => {
+  connection.query(`INSERT INTO movies (title, watched, statsVisible) VALUES ('${title}', 0, 0)`, (error, results, fields) => {
+    if (error) {
+      cb(error)
+    } else {
+      getMovies(cb)
+    }
+  })
+}
 
-const readAll = async () => {
-  try {
-    let entries = await Test.findAll({
-      raw: true,
-    })
-    return entries
-  } catch(e) {
-    console.log('db readAll error:', e)
-  }
+let updateWatched = (movie, cb) => {
+  connection.query(`update movies set watched=${!movie.currentStatus} where id=${movie.id}`, (error, results, fields) => {
+    if (error) {
+      cb(error)
+    } else {
+      getMovies(cb)
+    }
+  })
+}
+
+let updateVisible = (movie, cb) => {
+  connection.query(`update movies set statsVisible=${!movie.currentStatus} where id=${movie.id}`, (error, results, fields) => {
+    if (error) {
+      cb(error)
+    } else {
+      getMovies(cb)
+    }
+  })
+}
+
+let deleteMovie = (id, cb) => {
+  connection.query(`DELETE FROM movies WHERE id=${id};`, (error, results, fields) => {
+    if (error) {
+      cb(error)
+    } else {
+      getMovies(cb)
+    }
+  })
 }
 
 module.exports = {
-  sequelize,
-  Test,
-  readAll,
+  getMovies,
+  postMovie,
+  updateWatched,
+  updateVisible,
+  deleteMovie,
 }
