@@ -1,6 +1,6 @@
 # Fullstack Movie Database
 
-Fullstack app with full CRUD functionality that persists and displays updated movie data after each action. Built with the SERN stack using MySQL.
+Fullstack app with full CRUD functionality that persists and displays updated movie data after each action. Built with the MERN stack using MySQL.
 
 <p align="center">
 <img src="screenshot.png" width="350"/>
